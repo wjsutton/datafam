@@ -26,6 +26,7 @@ Quick Link
 
 ### :checkered_flag: Getting Started
 
+Requires Twitter API access
 
 #### :package: Packages
 
