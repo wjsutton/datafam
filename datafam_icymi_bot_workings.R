@@ -26,9 +26,6 @@ library(stringr)
 suppressMessages(library(dplyr))
 suppressMessages(library(gmailr))
 
-# Load funcions
-#source("login_twitter.R")
-
 date_from <- Sys.Date()-6
 date_to <- Sys.Date()
 
