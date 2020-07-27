@@ -13,6 +13,7 @@
 # determine ranking: popularity matched with followers
 # possible calc of reach?
 # identify and filter out spam accounts
+# identify bot accounts: https://github.com/mkearney/tweetbotornot, https://mikewk.shinyapps.io/botornot/
 # read: http://www.seancase.net/posts/rtweet-twitterbots-2/
 # Look at tone or sentiment of content?
 # Google cloud NLP?
