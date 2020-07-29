@@ -14,6 +14,7 @@
 # possible calc of reach?
 # identify and filter out spam accounts
 # identify bot accounts: https://github.com/mkearney/tweetbotornot, https://mikewk.shinyapps.io/botornot/
+#   - issues installing package on windows: https://github.com/mkearney/tweetbotornot/pull/26
 # read: http://www.seancase.net/posts/rtweet-twitterbots-2/
 # Look at tone or sentiment of content?
 # Google cloud NLP?
