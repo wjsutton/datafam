@@ -12,8 +12,8 @@ all_users <- unique(datafam[,c('user_id','screen_name')])
 all_users <- lookup_users(all_users$screen_name)[,c("user_id","screen_name")]
 
 # Get lists of friends and joining back to all_users
-# This section takes a long time due to a 15 minute rate limit
-friends <- rtweet::get_friends(all_users$screen_name)
+# This section takes a long time due to a 15 minute rate limit every 15 users
+friends <- rtweet::get_friends(all_users$screen_name, retryonratelimit = TRUE)
 friends <- dplyr::inner_join(friends, all_users, by = c("user_id" = "user_id"))
 
 # Shaping output data.frame
