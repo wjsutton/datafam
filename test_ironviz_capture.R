@@ -2,6 +2,7 @@ library(dplyr)
 library(longurl)
 library(stringr)
 
+# Load data
 ironviz <- readRDS("data/#ironviz_tweets.RDS")
 
 # Testing Regex
@@ -37,8 +38,6 @@ ironviz_urls <- unique(c(case_1_urls,case_2_urls))
 
 # 'https://public.tableau.com/views/TheImportanceofSleep-IronViz2020mobileapp/Home?:language=en&:display_count=y&publish=yes&:origin=viz_share_link'
 
-
-
 # Two types of Tableau links
 # 1. 'views'
 # 2. 'profile vizhome'
@@ -50,7 +49,7 @@ for(i in 1:length(ironviz_urls)){
   if(!is.na(str_locate(pattern="views",viz)[1])){
     
     # Start of "?:"
-    position <- (str_locate_all(pattern="\\?:",viz))[[1]][1,1]
+    position <- (str_locate_all(pattern="\\?:|\\?%",viz))[[1]][1,1]
     viz <- substr(viz,1,position-1)
     
     # End of "views"
@@ -88,8 +87,8 @@ for(i in 1:length(ironviz_urls)){
   }
   
   #img <- paste0("<img src='",gsub('/','&#47;',knit),"'>")
-  img <- paste0("<img src='",knit,"'>")
-  
+  #img <- paste0("<img src='",knit,"'>")
+  img <- knit
   
   if(i == 1){
     img_list <- img
@@ -100,6 +99,8 @@ for(i in 1:length(ironviz_urls)){
   }
   img_list <- unique(img_list)
 }
+
+
 
 
 # Write list of images to a text file for now
