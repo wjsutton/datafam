@@ -3,3 +3,5 @@
 .RData
 .Ruserdata
 data/
+ironviz_update_process.R
+ironviz_html/blog*

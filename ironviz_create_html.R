@@ -12,11 +12,7 @@ ironviz <- unique(rbind(ironviz,ironviz2020))
 df <- ironviz[,c('status_id','screen_name','urls_expanded_url')]
 df <- unnest(df,urls_expanded_url)
 
-# Separate column for url conversion
-#df$urls <- df$urls_expanded_url
-
 # Case 0: not NA
-#urls <- df[!is.na(urls)]
 df <- filter(df,!is.na(urls_expanded_url))
 
 # Expand short urls
@@ -47,7 +43,6 @@ remaining_urls <- subset(df$urls, !(df$urls %in% c(case_1_urls,case_2_urls)))
 ironviz_urls <- unique(c(case_1_urls,case_2_urls))
 
 ironviz_df <- filter(df,df$urls %in% ironviz_urls)
-
 
 # 'https://public.tableau.com/views/TheImportanceofSleep-IronViz2020mobileapp/Home?:language=en&:display_count=y&publish=yes&:origin=viz_share_link'
 
@@ -99,8 +94,6 @@ for(i in 1:length(ironviz_df$urls)){
       
   }
   
-  #img <- paste0("<img src='",gsub('/','&#47;',knit),"'>")
-  #img <- paste0("<img src='",knit,"'>")
   img <- knit
   
   if(i == 1){
@@ -123,12 +116,18 @@ ironviz_df <- ironviz_df %>%
 ironviz_df$img_and_tweet_link <- paste0("<a href='",ironviz_df$tweet_link,"'>",
                                         "<img src='",ironviz_df$img_links,"'></a>")
 
+# randomise vizzes
+ironviz_links <- sample(ironviz_df$img_and_tweet_link
+                        ,length(ironviz_df$img_and_tweet_link))
+
 
 number_of_vizzes <- length(ironviz_df$img_and_tweet_link)
 
+# Update html files
+
 # Write list of images to a text file for now
 fileConn <- file("ironviz_html/img_list.txt")
-writeLines(ironviz_df$img_and_tweet_link, fileConn)
+writeLines(ironviz_links, fileConn)
 close(fileConn)
 
 blurb_temp_file <- file("ironviz_html/blurb_template.txt")
@@ -151,10 +150,14 @@ blurb <- readLines(blurb_file)
 images <- readLines(images_file)
 footer <- readLines(footer_file)
 
-full_html <- paste0(header,blurb,images,footer)
+full_html <- c(header,blurb,images,footer)
 
 html_file <- file("ironviz_html/ironviz.html")
 writeLines(full_html, html_file)
 close(html_file)
 
+close(header_file)
+close(blurb_file)
+close(images_file)
+close(footer_file)
 
