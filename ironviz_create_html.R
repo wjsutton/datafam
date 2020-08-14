@@ -1,3 +1,4 @@
+library(rtweet)
 library(dplyr)
 library(longurl)
 library(stringr)
@@ -8,9 +9,40 @@ ironviz <- readRDS("data/#ironviz_tweets.RDS")
 ironviz2020 <- readRDS("data/#ironviz2020_tweets.RDS")
 ironviz <- unique(rbind(ironviz,ironviz2020))
 
+# Tweet is sharing a viz not a submission 
+ironviz <- ironviz %>% filter(status_id != '1286048757071646720')
+ironviz <- ironviz %>% filter(status_id != '1291346281508503554')
+ironviz <- ironviz %>% filter(status_id != '1291267791253835776')
+ironviz <- ironviz %>% filter(status_id != '1291183057572179968')
+ironviz <- ironviz %>% filter(status_id != '1291176574499328001')
+
+#ironviz %>% filter(status_id == '1290102953924124672')
+
+#missing <- lookup_tweets(c('1290939514177937408','1290952501508943872','1290908538349342721'))
+#ironviz <- rbind(ironviz,missing)
+#saveRDS(ironviz,"data/#ironviz_tweets.RDS")
+
 # Flatten list in data.frame
 df <- ironviz[,c('status_id','screen_name','urls_expanded_url')]
 df <- unnest(df,urls_expanded_url)
+
+# fixing links
+df$urls_expanded_url <- gsub('^https://public.tableau.com/profile/aashique.s#!/$'
+                             ,'https://public.tableau.com/profile/aashique.s#!/vizhome/LifeofaSickleCellWarrior/LifeofaSICKLECELLWARRIOR'
+                             ,df$urls_expanded_url)
+
+df$urls_expanded_url <- gsub('^http://shorturl.at/fGLMS$'
+                            ,'https://public.tableau.com/views/LEADINGCAUSESOFDEATH-ABORIGINALANDTORRESSTRAITISLANDERVS_NON-INDIGENOUS/Dashboard1?:language=en&:display_count=y&:origin=viz_share_link'
+                            ,df$urls_expanded_url)
+
+df$urls_expanded_url <- gsub('^https://lnkd.in/g3m324q$'
+                            ,'https://public.tableau.com/views/IButtons_15964398581060/IronViz2020?:language=en&:display_count=n&:origin=viz_share_link'
+                            ,df$urls_expanded_url)
+
+df$urls_expanded_url <- gsub('^http://shorturl.at/fFLST$'
+                            ,'https://public.tableau.com/profile/marian.fairman#!/vizhome/EvictionALoomingCrisisinPublicHealth/Evictions'
+                            ,df$urls_expanded_url)
+
 
 # Case 0: not NA
 df <- filter(df,!is.na(urls_expanded_url))
@@ -42,6 +74,7 @@ case_2_urls <- second_pass
 remaining_urls <- subset(df$urls, !(df$urls %in% c(case_1_urls,case_2_urls)))
 ironviz_urls <- unique(c(case_1_urls,case_2_urls))
 
+remaining_df <- filter(df, df$urls %in% remaining_urls)
 ironviz_df <- filter(df,df$urls %in% ironviz_urls)
 
 # 'https://public.tableau.com/views/TheImportanceofSleep-IronViz2020mobileapp/Home?:language=en&:display_count=y&publish=yes&:origin=viz_share_link'
@@ -51,14 +84,34 @@ ironviz_df <- filter(df,df$urls %in% ironviz_urls)
 # 2. 'profile vizhome'
 
 for(i in 1:length(ironviz_df$urls)){
-  viz <- ironviz_df$urls[i]
   
-  # Case 1: views
-  if(!is.na(str_locate(pattern="views",viz)[1])){
-    
-    # Start of "?:"
-    position <- (str_locate_all(pattern="\\?:|\\?%",viz))[[1]][1,1]
-    viz <- substr(viz,1,position-1)
+  viz <- ironviz_df$urls[i]
+  # Case 1a: views with a ? clause
+#  if(!is.na(str_locate(pattern="views",viz)[1])){
+#    
+#    # End of "views"
+#    views_end_pos <- str_locate_all(pattern="views",viz)[[1]][1,2]
+#    two_letters_of_dash <- substr(viz,views_end_pos+2,views_end_pos+3)
+#    
+#    # Start of "views"
+#    views_start_pos <- str_locate_all(pattern="views",viz)[[1]][1,1]
+#    
+#    knit <- paste0(substr(viz,1,views_start_pos-1)
+#                   ,'static/images/',two_letters_of_dash,'/'
+#                   ,substr(viz,views_end_pos+2,nchar(viz))
+#                   ,'/1.png')
+#  }
+  
+  # Case 1b: views with a ? clause
+  if(!is.na(str_locate(pattern="views",viz))[1]){
+
+    if(!is.na(str_locate(pattern="\\?:|\\?%|\\?&",viz))[1]){
+
+      # Start of "?:"
+      position <- (str_locate_all(pattern="\\?:|\\?%|\\?&",viz))[[1]][1,1]
+      viz <- substr(viz,1,position-1)
+      
+    }
     
     # End of "views"
     views_end_pos <- str_locate_all(pattern="views",viz)[[1]][1,2]
@@ -112,6 +165,7 @@ ironviz_df$tweet_link <- paste0('https://twitter.com/',ironviz_df$screen_name,'/
 ironviz_df <- ironviz_df %>% 
   group_by(img_links) %>%
   filter(status_id == min(status_id)) 
+ironviz_df <- unique(ironviz_df)
 
 ironviz_df$img_and_tweet_link <- paste0("<a href='",ironviz_df$tweet_link,"'>",
                                         "<img src='",ironviz_df$img_links,"'></a>")
