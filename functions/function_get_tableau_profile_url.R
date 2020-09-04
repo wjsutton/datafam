@@ -44,30 +44,27 @@ get_tableau_profile_url <- function(urls){
     }
     
   }
-  df$case_a_profiles <- case_a_profiles
+  
+  df$case_a_profiles <- if_else(nchar(case_a_profiles)<10,'NA',case_a_profiles)
+  df$case_a_profiles <- gsub('^NA$',NA,df$case_a_profiles)
   
   # check for viz home
-  pattern <- "^(.*)vizhome(.*)$"
-  case_when(
-    is.na(df$case_b_urls) ~ NA,
-    
+  vizhome <- "^(.*)vizhome(.*)$"
+  
+  df$case_b_profiles <- case_when(
+    is.na(df$case_b_urls) ~ 'NA',
+    grepl(vizhome, df$case_b_urls) ~ substr(df$case_b_urls,1,str_locate(df$case_b_urls,'vizhome')[,1]-1),
+    !grepl(vizhome, df$case_b_urls) ~ df$case_b_urls
   )
-  df$case_b_urls
   
+  df$case_b_profiles <- gsub('^NA$',NA,df$case_b_profiles)
   
-  
-  # Case 2: https://public.tableau.com/profile/agata1619#!/vizhome/Whattimearebabiesborn/Whattimearebabiesborn?publish=yes
-  pattern2a <- 'https://public\\.tableau\\.com/profile/[A-z|0-9|\\.|-]*'
-  
-  first_pass <- df$urls[grep(pattern2a,df$urls)]
-  #second_pass <- first_pass[grep(pattern2b,first_pass)]
-  
-  case_2_profiles <- substr(first_pass,1,str_locate(first_pass,'vizhome')[,1]-1)
-  case_2_urls <- first_pass
-  
-  profile_urls <- unique(c(case_1_profiles,case_2_profiles))
-  
-  
-  
-  
+  df$profile <- if_else(is.na(df$case_a_profiles),df$case_b_profiles,df$case_a_profiles)
+
+  output <- df[,c('original_url','profile')]
+  return(output)
 }
+
+
+
+
