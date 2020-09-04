@@ -20,9 +20,6 @@ get_tableau_profile_url <- function(urls){
   
   
   for(i in 1:nrow(df)){
-  #for(i in 1:5){
-   # print(i)
-    #tableau_profile <- df$case_a_urls[i]
     
     if(is.na(df$case_a_urls[i])){
       case_a_profile <- NA
@@ -42,7 +39,6 @@ get_tableau_profile_url <- function(urls){
     if(i != 1){
       case_a_profiles <- c(case_a_profiles,case_a_profile)
     }
-    
   }
   
   df$case_a_profiles <- if_else(nchar(case_a_profiles)<10,'NA',case_a_profiles)
@@ -58,11 +54,12 @@ get_tableau_profile_url <- function(urls){
   )
   
   df$case_b_profiles <- gsub('^NA$',NA,df$case_b_profiles)
-  
+
   df$profile <- if_else(is.na(df$case_a_profiles),df$case_b_profiles,df$case_a_profiles)
 
   output <- df[,c('original_url','profile')]
   return(output)
+  
 }
 
 
