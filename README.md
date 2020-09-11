@@ -28,7 +28,12 @@ Quick Link
 
 Requires Twitter API access
 
-#### :package: Packages
+#### :package: Functionality
+
+- [Searching and Download Tweets from Twitter](functions/function_get_and_save_tweets.R)
+- [Getting a Tableau profile URL from a list of URLs](functions/function_get_tableau_profile_url.R)
+- [Getting a Screenshot of a Tableau Viz](functions/function_get_tableau_viz_screenshot_url.R)
+- [Extracting Tableau Public profile data from a profile name](functions/function_get_tableau_public_api_extract.R)
 
 
 ### :thinking: TO DO List:
