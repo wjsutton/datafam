@@ -38,5 +38,8 @@ Requires Twitter API access
 
 ### :thinking: TO DO List:
 
-- [x] init commit
-- [ ] everything else
+Add functionality for other Tableau Public API calls
+- [ ] Get Followers: [https://public.tableau.com/profile/api/followers/will7508?count=12&index=0](https://public.tableau.com/profile/api/followers/will7508?count=12&index=0)
+- [ ] Get Following: [https://public.tableau.com/profile/api/following/will7508?count=12&index=0](https://public.tableau.com/profile/api/following/will7508?count=12&index=0)
+- [ ] Get Favourites: [https://public.tableau.com/profile/api/favorite/will7508/workbook?](https://public.tableau.com/profile/api/favorite/will7508/workbook?)
+
